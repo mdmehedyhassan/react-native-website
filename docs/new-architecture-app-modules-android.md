@@ -18,7 +18,7 @@ You can mitigate this by following the approach described in [Speeding up your B
 
 :::
 
-The code-gen will output some Java and some C++ code that now we need to build.
+The Codegen will output some Java and some C++ code that now we need to build.
 
 Let’s edit your **module level** `build.gradle` to include the **two** `externalNativeBuild` blocks detailed below inside the `android{}` block:
 
@@ -37,10 +37,15 @@ android {
                         "GENERATED_SRC_DIR=$buildDir/generated/source",
                         "PROJECT_BUILD_DIR=$buildDir",
                         "REACT_ANDROID_DIR=$rootDir/../node_modules/react-native/ReactAndroid",
-                        "REACT_ANDROID_BUILD_DIR=$rootDir/../node_modules/react-native/ReactAndroid/build"
+                        "REACT_ANDROID_BUILD_DIR=$rootDir/../node_modules/react-native/ReactAndroid/build",
+                        "NODE_MODULES_DIR=$rootDir/../node_modules"
                 cFlags "-Wall", "-Werror", "-fexceptions", "-frtti", "-DWITH_INSPECTOR=1"
                 cppFlags "-std=c++17"
                 targets "myapplication_appmodules"
+                // Fix for windows limit on number of character in file paths and in command lines
+                if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                    arguments "NDK_APP_SHORT_COMMANDS=true"
+                }
             }
         }
     }

@@ -7,40 +7,25 @@ import NewArchitectureWarning from './\_markdown-new-architecture-warning.mdx';
 
 <NewArchitectureWarning/>
 
-There’s a few prerequisites that should be addressed before the new architecture is enabled in your application.
+There’s a few prerequisites that should be addressed before the New Architecture is enabled in your application.
 
 ## Use a React Native nightly release
 
 At this time, you must use a React Native nightly release in order to get access to the most up to date changes. Eventually, we will recommend targeting a minimum stable open source release.
 
-This guide is written with the expectation that you’re using a specific nightly release. As new revisions of this guide are released, the target nightly release may be updated. The specific nightly version that we will be using throughout the rest of this guide is version `0.0.0-20220201-2008-79975d146`.
+This guide is written with the expectation that you’re using a specific nightly release. As new revisions of this guide are released, the target nightly release may be updated. The specific nightly version that we will be using throughout the rest of this guide is version `0.0.0-20220705-2052-71e89213a`.
 
 Before upgrading your app to a specific nightly release, we recommend upgrading your app to the latest open source release. By upgrading to a published open source release first, you will be able to take advantage of tools like the [upgrade helper](https://react-native-community.github.io/upgrade-helper/) to determine what other changes may be required for your project.
 
-As of this writing, the latest stable release is `0.67.2`. Once you have upgraded your project to this version successfully, you may proceed to targeting the `0.0.0-20220201-2008-79975d146` nightly release. You may target this nightly release the same way you’d target any other version of React Native:
+As of this writing, the latest stable release is `0.69.1`. Once you have upgraded your project to this version successfully, you may proceed to targeting the `0.0.0-20220705-2052-71e89213a` nightly release. You may target this nightly release the same way you’d target any other version of React Native:
 
 ```bash
-yarn add react-native@0.0.0-20220201-2008-79975d146
+yarn add react-native@0.0.0-20220705-2052-71e89213a
 ```
-
-## Install react-native-codegen
-
-Make sure that you're using the latest version of the [`react-native-codegen`](https://www.npmjs.com/package/react-native-codegen) NPM package. At the time of writing it's `0.0.13`.
-
-```bash
-yarn add react-native-codegen
-```
-
-:::info
-
-If you see an error like `***TypeError: RNCodegen.generateFromSchemas is not a function.***`, it means that you're using a older version of `react-native-codegen`.
-Make sure you don't have an older version installed under the `node_modules/react-native/node_modules` folder. You can remove that or reinstall everything in node_modules to fix the problem.
-
-:::
 
 ### Android specifics
 
-Using the new architecture on Android has some prerequisites that you need to meet:
+Using the New Architecture on Android has some prerequisites that you need to meet:
 
 1. Using Gradle 7.x and Android Gradle Plugin 7.x
 2. Using the **new React Gradle Plugin**
@@ -53,18 +38,6 @@ cd android && ./gradlew wrapper --gradle-version 7.3 --distribution-type=all
 ```
 
 While the AGP version should be updated inside the **top level** `build.gradle` file at the `com.android.tools.build:gradle` dependency line.
-
-If you’re set with it, let’s now install the new Gradle plugin which is distributed through a NPM package called [**`react-native-gradle-plugin`**](https://www.npmjs.com/package/react-native-gradle-plugin). You can do so with:
-
-```bash
-yarn add react-native-gradle-plugin
-```
-
-You can control if you have the package already installed by doing:
-
-```bash
-ls -la node_modules/react-native-gradle-plugin
-```
 
 Now, you can edit your **top level** `settings.gradle` file to include the following line at the end of the file:
 
@@ -82,7 +55,7 @@ buildscript {
     // ...
     dependencies {
         // Make sure that AGP is at least at version 7.x
-        classpath("com.android.tools.build:gradle:7.0.4")
+        classpath("com.android.tools.build:gradle:7.2.0")
 
         // Add those lines
         classpath("com.facebook.react:react-native-gradle-plugin")
@@ -119,37 +92,15 @@ dependencies {
 
 ## Use Hermes
 
-Hermes is an open-source JavaScript engine optimized for React Native. We highly recommend using Hermes in your application. With Hermes enabled, you will be able to use the JavaScript debugger in Flipper to directly debug your JavaScript code.
+Hermes is an open-source JavaScript engine optimized for React Native. Hermes is enabled by default and you have to explicitly disable it if you want to use JSC.
 
-Please [follow the instructions on the React Native website](hermes) in order to enable Hermes in your application.
+We highly recommend using Hermes in your application. With Hermes enabled, you will be able to use the JavaScript debugger in Flipper to directly debug your JavaScript code.
+
+Please [follow the instructions on the React Native website](hermes) to learn how to enable/disable Hermes.
 
 :::caution
 
 **iOS:** If you opt out of using Hermes, you will need to replace `HermesExecutorFactory` with `JSCExecutorFactory` in any examples used throughout the rest of this guide.
-
-:::
-
-## iOS: Enable C++17 language feature support
-
-Your Xcode project settings need to be updated to support C++17 language features.
-
-**Instructions**
-
-1. Select your project in the Project navigator on the left (e.g. MyXcodeApp)
-2. Then, make sure your project is selected in the center pane (as opposed to a particular target in your project, e.g. MyXcodeApp under Project, not under Targets).
-3. Go to Build Settings
-4. Search for C++ Language Dialect or CLANG_CXX_LANGUAGE_STANDARD
-5. Make sure **C++17** is selected from the dropdown menu (or enter "c++17" directly into the value box).
-
-If done correctly, your diff will show the following changes to your project file:
-
-```ruby
-CLANG_CXX_LANGUAGE_STANDARD = "c++17"
-```
-
-:::info
-
-Your project should also be configured to support Folly. This should be done automatically once the library dependency is picked up, so no further changes to your project are necessary.
 
 :::
 
